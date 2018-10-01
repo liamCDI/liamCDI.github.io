@@ -1,0 +1,56 @@
+Speeding Up Frontend Dev with GopherJS
+and why WASM won't kill it anytime soon
+9 Sept 2018
+Tags: baltimore,gopherjs
+
+Liam Kelly
+IoT Engineer, CDI
+liamkelly17@gmail.com
+https://medium.com/@liamkelly17
+@upsampled
+
+*Outline
+
+-What is GopherJS
+-Common Design Patterns
+-Example
+-Pitfalls
+-Compared to WASM
+
+*GopherJS - What is it?
+
+GopherJS transpiles Go to JS. 
+
+JS
+     windows.alert( 'Hello, world' );
+
+Go
+    import  "github.com/gopherjs/gopherjs/js"
+    func main() {
+        js.Global.Call("alert", "Hello, world")
+    }
+Allows for developer/code resuse, type checking and Go STDLIB access 
+
+* Common Design Patterns
+Everything is about sharing backend code with the browser. Most people do this one of two ways:
+
+- Expose methods as a Javascript library (no main function)
+
+    js.Module.Get("exports").Set("Contains", strings.contains)
+
+- Integrate GopherJS into an existing JS framework (main function)
+
+    import "github.com/gopherjs/jquery"
+    func main() {
+        jQuery("#textform").On(jquery.KEYUP, func(e jquery.Event) {
+            name := jQuery(e.Target).Val()
+            name = jquery.Trim(name)
+            jQuery("#result").SetText("Welcome to GopherJS, " + name + " !")
+    }
+
+*Example
+
+- Reusing AsciiArt code from cgo talk
+- Integrating with JQuery 
+- Either Reads a local file or GETs image from CORS website (Imgur)
+- CSS needs a little work but you get the gist
