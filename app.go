@@ -142,7 +142,7 @@ func (a *ArtState) DoForm() {
 	}
 }
 
-//Render the form
+//RenderForm the form
 func (a *ArtState) RenderForm() {
 	tmpl := `
 	<form>
@@ -162,9 +162,9 @@ func (a *ArtState) RenderForm() {
 	  <small id="asciiPalHelp" class="form-text text-muted">ASCII Character used to 'paint' the image</small>
 	</div>
 	<div class="form-group">
-	  <label for="transf">ASCII Pallete</label>
+	  <label for="transf">Image Transforms</label>
 	  <input type="text" class="form-control" id="transf" aria-describedby="transfHelp" value="resize=100,50;">
-	  <small id="transfHelp" class="form-text text-muted">Image Transform Strings sperated by ';'.resize=width,height;contrast=val;invert;sobel;crop=x0,y0,x1,y1;fliphorizontal;flipvertical;rotate=val;conv=x11,x12,x13,x21,x22,x23,x31,x32,x33;
+	  <small id="transfHelp" class="form-text text-muted">Using GIFT package, Image Transform Strings sperated by ';'.resize=width,height;contrast=val;invert;sobel;crop=x0,y0,x1,y1;fliphorizontal;flipvertical;rotate=val;conv=x11,x12,x13,x21,x22,x23,x31,x32,x33;
 															</small>
 	</div>
 	<button type="button" id="renderBut" class="btn btn-primary">Render</button>
