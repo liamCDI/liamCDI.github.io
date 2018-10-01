@@ -48,7 +48,7 @@ func (a *ArtState) PrintErr(err error) {
 
 //ReadImage reads a local image file, does not block the main thread
 func (a *ArtState) ReadImage(o *js.Object) {
-	go func() { a.Pic = readImage(o); a.Render() }()
+	go func() { a.Pic = readImage(o); a.Render("") }()
 }
 
 func readImage(blob *js.Object) []byte {
@@ -82,16 +82,20 @@ func (a *ArtState) getImage(img string) {
 		return
 	}
 
-	a.Render()
+	a.Render(img)
 }
 
 //Render the ascii image
-func (a *ArtState) Render() {
+func (a *ArtState) Render(url string) {
 	tpl := `
 	<pre>
 	{{.}}
 	</pre>
 	`
+	imgurl := ""
+	if url != "" {
+		imgurl = "<img src=\"" + url + "\" width=\"50\">"
+	}
 	out, err := ascart.Bytes2asc(a.Pic, a.Pallete, a.Tansforms)
 	if err != nil {
 		a.PrintErr(err)
@@ -110,7 +114,7 @@ func (a *ArtState) Render() {
 		a.PrintErr(err)
 		log.Println(err)
 	}
-	a.canvasjq.SetHtml(b.String())
+	a.canvasjq.SetHtml(b.String() + imgurl)
 }
 
 //DoForm read the form values
@@ -178,4 +182,8 @@ var state ArtState
 func main() {
 	state = NewArtState()
 	state.RenderForm()
+
+	state.canvasjq.SetHtml(` <div class="alert alert-info" role="alert">
+	Turn a local or Imgur hosted image into ASCII art. Point to the image, give the ASCII characters to use (lowest to highest intensity), optionally perform image transforms, and finally select Render.
+</div>`)
 }
