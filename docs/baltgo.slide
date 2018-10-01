@@ -1,6 +1,6 @@
 Speeding Up Frontend Dev with GopherJS
-and why WASM won't kill it anytime soon
-9 Sept 2018
+And why to wait on WASM
+9 Sep 2018
 Tags: baltimore,gopherjs
 
 Liam Kelly
@@ -9,32 +9,35 @@ liamkelly17@gmail.com
 https://medium.com/@liamkelly17
 @upsampled
 
-*Outline
+* Outline
 
--What is GopherJS
--Common Design Patterns
--Example
--Pitfalls
--Compared to WASM
+- What is GopherJS
+- Common Design Patterns
+- Single Page WebApp Example
+- Pitfalls and Workarounds
+- Comparing GopherJS to WASM
 
-*GopherJS - What is it?
+* GopherJS - What is it?
 
 GopherJS transpiles Go to JS. 
 
 JS
-     windows.alert( 'Hello, world' );
+
+     alert( 'Hello, world' );
 
 Go
+
     import  "github.com/gopherjs/gopherjs/js"
     func main() {
         js.Global.Call("alert", "Hello, world")
     }
-Allows for developer/code resuse, type checking and Go STDLIB access 
+
+Allows for Go backend developer/code reuse, type checking and Go STDLIB access 
 
 * Common Design Patterns
 Everything is about sharing backend code with the browser. Most people do this one of two ways:
 
-- Expose methods as a Javascript library (no main function)
+- Expose methods as a JavaScript library (no main function)
 
     js.Module.Get("exports").Set("Contains", strings.contains)
 
@@ -48,9 +51,38 @@ Everything is about sharing backend code with the browser. Most people do this o
             jQuery("#result").SetText("Welcome to GopherJS, " + name + " !")
     }
 
-*Example
+* Example
 
-- Reusing AsciiArt code from cgo talk
-- Integrating with JQuery 
-- Either Reads a local file or GETs image from CORS website (Imgur)
+- Bootstrap CSS so it won't look terrible 
+- Reusing .link https://github.com/liamCDI/arcartok AsciiArtOK code from cgo talk
+- Integrating with JQuery for CB registration
+- Either reads a image local file or GETs image from CORS website (Imgur works)
 - CSS needs a little work but you get the gist
+- See it .link https://liamcdi.github.io/ here
+
+* Pitfalls - Large File
+
+Large output files even with JS minification (~5M). Libraries that use reflection are a major culprit (cannot determine which functions are used easily).
+
+Workarounds
+- Avoid reflection libraries (fmt,encoding,etc)
+- Compress and send via GZIP (~5M to ~1M). Pre-compression is optimal.
+- Can rely on browser calls to remove other libraries (http, etc.)
+
+Failed to compile due to unhandled syscall use (does not effect WASM for STDLIB)
+
+Workarounds
+- put structs shared by the front and back into their own package. The package can have functions from non-syscall libraries. Create a backend-only package for syscalls.
+
+* Compared to WASM
+Benchmark and Analysis .link https://dev.to/hajimehoshi/gopherjs-vs-webassembly-for-go-148m here
+
+WASM Pros
+- syscall support enables many more packages to work out of the box
+- greater support from community
+
+WASM Cons
+- Bigger binaries (probably cannot compress as well as js)
+- Actually slower (didn't believe it till i saw the data)
+- Cannot leverage existing JavaScript libraries easily. 
+- Not sure if big IT is allowing it yet for security reasons (trust the JS devil you know)

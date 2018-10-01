@@ -41,11 +41,12 @@ func NewArtState() ArtState {
 
 }
 
+//PrintErr Print the Go error as a bootstrap badge
 func (a *ArtState) PrintErr(err error) {
 	a.infojq.SetHtml(`<div class="alert alert-danger" role="alert">` + err.Error() + `</div>`)
 }
 
-//ReadImage reads a local image file
+//ReadImage reads a local image file, does not block the main thread
 func (a *ArtState) ReadImage(o *js.Object) {
 	go func() { a.Pic = readImage(o); a.Render() }()
 }
@@ -60,7 +61,7 @@ func readImage(blob *js.Object) []byte {
 	return <-b
 }
 
-//GetImage gets an image hostet on a CORS webpage like Imgur
+//GetImage gets an image hostet on a CORS webpage like Imgur, does not block the main thread
 func (a *ArtState) GetImage(img string) {
 	go a.getImage(img)
 }
@@ -112,6 +113,7 @@ func (a *ArtState) Render() {
 	a.canvasjq.SetHtml(b.String())
 }
 
+//DoForm read the form values
 func (a *ArtState) DoForm() {
 	a.Pallete = a.formjq.Find("#asciiPal").Val()
 	a.Tansforms = a.formjq.Find("#transf").Val()
@@ -136,12 +138,13 @@ func (a *ArtState) DoForm() {
 	}
 }
 
+//Render the form
 func (a *ArtState) RenderForm() {
 	tmpl := `
 	<form>
 	<div class="form-group">
 	  <label for="imgUrl">Imgur URL</label>
-	  <input type="text" class="form-control" id="imgUrl" aria-describedby="imgUrlHelp" placeholder="Enter Url">
+	  <input type="text" class="form-control" id="imgUrl" aria-describedby="imgUrlHelp" value="https://i.imgur.com/9qXKs3e.png">
 	  <small id="imgUrlHelp" class="form-text text-muted">URL of image hosted on Imgur</small>
 	</div>
 	<div class="form-group">
@@ -156,8 +159,9 @@ func (a *ArtState) RenderForm() {
 	</div>
 	<div class="form-group">
 	  <label for="transf">ASCII Pallete</label>
-	  <input type="text" class="form-control" id="transf" aria-describedby="transfHelp" value="resize=50,0;">
-	  <small id="transfHelp" class="form-text text-muted">Image Transform String</small>
+	  <input type="text" class="form-control" id="transf" aria-describedby="transfHelp" value="resize=100,50;">
+	  <small id="transfHelp" class="form-text text-muted">Image Transform Strings sperated by ';'.resize=width,height;contrast=val;invert;sobel;crop=x0,y0,x1,y1;fliphorizontal;flipvertical;rotate=val;conv=x11,x12,x13,x21,x22,x23,x31,x32,x33;
+															</small>
 	</div>
 	<button type="button" id="renderBut" class="btn btn-primary">Render</button>
   </form>
@@ -168,11 +172,10 @@ func (a *ArtState) RenderForm() {
 
 }
 
+//ArtState global state singleton
 var state ArtState
 
 func main() {
 	state = NewArtState()
-
 	state.RenderForm()
-
 }

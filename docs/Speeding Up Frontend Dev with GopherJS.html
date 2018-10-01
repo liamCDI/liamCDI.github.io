@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<!-- saved from url=(0036)http://localhost:3999/baltgo.slide#1 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Speeding Up Frontend Dev with GopherJS</title>
+    
+    <script>
+      var notesEnabled =  false ;
+    </script>
+    <script src="./Speeding Up Frontend Dev with GopherJS_files/slides.js.download"></script>
+
+    
+
+    <script>
+      
+      if (window["location"] && window["location"]["hostname"] == "talks.golang.org") {
+        var _gaq = _gaq || [];
+        _gaq.push(["_setAccount", "UA-11222381-6"]);
+        _gaq.push(["b._setAccount", "UA-49880327-6"]);
+        window.trackPageview = function() {
+          _gaq.push(["_trackPageview", location.pathname+location.hash]);
+          _gaq.push(["b._trackPageview", location.pathname+location.hash]);
+        };
+        window.trackPageview();
+        window.trackEvent = function(category, action, opt_label, opt_value, opt_noninteraction) {
+          _gaq.push(["_trackEvent", category, action, opt_label, opt_value, opt_noninteraction]);
+          _gaq.push(["b._trackEvent", category, action, opt_label, opt_value, opt_noninteraction]);
+        };
+      }
+    </script>
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1"><meta name="apple-mobile-web-app-capable" content="yes"><link id="colorscheme_css" rel="stylesheet" type="text/css" href="chrome-extension://depioieabmbifhmkflcagceedklkiahb/lib/hl/styles/github.css"></head>
+
+  <body style="display: none" class="loaded">
+
+    <section class="slides layout-widescreen" style="">
+
+      <article class="current">
+        <h1>Speeding Up Frontend Dev with GopherJS</h1>
+        <h3>And why to wait on WASM</h3>
+        <h3>9 September 2018</h3>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    Liam Kelly
+  </p>
+  
+
+  
+  <p>
+    IoT Engineer, CDI
+  </p>
+  
+
+          </div>
+        
+      </article>
+
+  
+  
+      <article class="next">
+      
+        <h3>Outline</h3>
+        
+  <ul>
+  
+    <li>What is GopherJS</li>
+  
+    <li>Common Design Patterns</li>
+  
+    <li>Single Page WebApp Example</li>
+  
+    <li>Pitfalls and Workarounds</li>
+  
+    <li>Comparing GopherJS to WASM</li>
+  
+  </ul>
+
+      
+      <span class="pagenumber">2</span>
+      </article>
+  
+  
+  
+      <article class="far-next">
+      
+        <h3>GopherJS - What is it?</h3>
+        
+  
+  <p>
+    GopherJS transpiles Go to JS. 
+  </p>
+  
+
+  
+  <p>
+    JS
+  </p>
+  
+
+  
+  <div class="code"><pre class="hljs go">alert( <span class="hljs-string">'Hello, world'</span> );</pre></div>
+  
+
+  
+  <p>
+    Go
+  </p>
+  
+
+  
+  <div class="code"><pre class="hljs go"><span class="hljs-keyword">import</span>  <span class="hljs-string">"github.com/gopherjs/gopherjs/js"</span>
+<span class="hljs-keyword">func</span> main() {
+    js.Global.Call(<span class="hljs-string">"alert"</span>, <span class="hljs-string">"Hello, world"</span>)
+}</pre></div>
+  
+
+  
+  <p>
+    Allows for Go backend developer/code reuse, type checking and Go STDLIB access 
+  </p>
+  
+
+      
+      <span class="pagenumber">3</span>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Common Design Patterns</h3>
+        
+  
+  <p>
+    Everything is about sharing backend code with the browser. Most people do this one of two ways:
+  </p>
+  
+
+  <ul>
+  
+    <li>Expose methods as a JavaScript library (no main function)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre class="hljs go">js.Module.Get(<span class="hljs-string">"exports"</span>).Set(<span class="hljs-string">"Contains"</span>, strings.contains)</pre></div>
+  
+
+  <ul>
+  
+    <li>Integrate GopherJS into an existing JS framework (main function)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre class="hljs go"><span class="hljs-keyword">import</span> <span class="hljs-string">"github.com/gopherjs/jquery"</span>
+<span class="hljs-keyword">func</span> main() {
+    jQuery(<span class="hljs-string">"#textform"</span>).On(jquery.KEYUP, <span class="hljs-keyword">func</span>(e jquery.Event) {
+        name := jQuery(e.Target).Val()
+        name = jquery.Trim(name)
+        jQuery(<span class="hljs-string">"#result"</span>).SetText(<span class="hljs-string">"Welcome to GopherJS, "</span> + name + <span class="hljs-string">" !"</span>)
+}</pre></div>
+  
+
+      
+      <span class="pagenumber">4</span>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Example</h3>
+        
+  <ul>
+  
+    <li>Bootstrap CSS so it won't look terrible </li>
+  
+    <li>Reusing .link https://github.com/liamCDI/arcartok AsciiArtOK code from cgo talk</li>
+  
+    <li>Integrating with JQuery for CB registration</li>
+  
+    <li>Either reads a image local file or GETs image from CORS website (Imgur works)</li>
+  
+    <li>CSS needs a little work but you get the gist</li>
+  
+    <li>See it .link https://liamcdi.github.io/ here</li>
+  
+  </ul>
+
+      
+      <span class="pagenumber">5</span>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Pitfalls - Large File</h3>
+        
+  
+  <p>
+    Large output files even with JS minification (~5M). Libraries that use reflection are a major culprit (cannot determine which functions are used easily).
+  </p>
+  
+
+  
+  <p>
+    Workarounds
+<br>
+
+    - Avoid reflection libraries (fmt,encoding,etc)
+<br>
+
+    - Compress and send via GZIP (~5M to ~1M). Pre-compression is optimal.
+<br>
+
+    - Can rely on browser calls to remove other libraries (http, etc.)
+  </p>
+  
+
+  
+  <p>
+    Failed to compile due to unhandled syscall use (does not effect WASM for STDLIB)
+  </p>
+  
+
+  
+  <p>
+    Workarounds
+<br>
+
+    - put structs shared by the front and back into their own package. The package can have functions from non-syscall libraries. Create a backend-only package for syscalls.
+  </p>
+  
+
+      
+      <span class="pagenumber">6</span>
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Compared to WASM</h3>
+        
+  
+  <p>
+    Benchmark and Analysis .link https://dev.to/hajimehoshi/gopherjs-vs-webassembly-for-go-148m here
+  </p>
+  
+
+  
+  <p>
+    WASM Pros
+<br>
+
+    - syscall support enables many more packages to work out of the box
+<br>
+
+    - greater support from community
+  </p>
+  
+
+  
+  <p>
+    WASM Cons
+<br>
+
+    - Bigger binaries (probably cannot compress as well as js)
+<br>
+
+    - Actually slower (didn't believe it till i saw the data)
+<br>
+
+    - Cannot leverage existing JavaScript libraries easily. 
+<br>
+
+    - Not sure if big IT is allowing it yet for security reasons (trust the JS devil you know)
+  </p>
+  
+
+      
+      <span class="pagenumber">7</span>
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h3>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    Liam Kelly
+  </p>
+  
+
+  
+  <p>
+    IoT Engineer, CDI
+  </p>
+  
+<p class="link"><a href="mailto:liamkelly17@gmail.com" target="_blank">liamkelly17@gmail.com</a></p><p class="link"><a href="https://medium.com/@liamkelly17" target="_blank">https://medium.com/@liamkelly17</a></p><p class="link"><a href="http://twitter.com/upsampled" target="_blank">@upsampled</a></p>
+          </div>
+        
+      </article>
+
+    <div class="slide-area" id="prev-slide-area"></div><div class="slide-area" id="next-slide-area"></div></section>
+
+    <div id="help" style="display: none;">
+      Use the left and right arrow keys or click the left and right
+      edges of the page to navigate between slides.<br>
+      (Press 'H' or navigate to hide this message.)
+    </div>
+
+    
+    <script src="./Speeding Up Frontend Dev with GopherJS_files/play.js.download"></script>
+    
+
+    <script>
+      (function() {
+        
+        if (window["location"] && window["location"]["hostname"] == "talks.golang.org") {
+          var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true;
+          ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";
+          var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);
+        }
+      })();
+    </script>
+  
+
+<link rel="stylesheet" type="text/css" href="./Speeding Up Frontend Dev with GopherJS_files/css"><link rel="stylesheet" type="text/css" href="./Speeding Up Frontend Dev with GopherJS_files/styles.css"></body></html>
