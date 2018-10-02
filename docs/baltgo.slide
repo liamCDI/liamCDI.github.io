@@ -54,35 +54,35 @@ Everything is about sharing backend code with the browser. Most people do this o
 * Example
 
 - Bootstrap CSS so it won't look terrible 
-- Reusing .link https://github.com/liamCDI/arcartok AsciiArtOK code from cgo talk
+- Reusing [[https://github.com/liamCDI/arcartok][AsciiArtOK]] code from cgo talk
 - Integrating with JQuery for CB registration
 - Either reads a image local file or GETs image from CORS website (Imgur works)
 - CSS needs a little work but you get the gist
-- See it .link https://liamcdi.github.io/ here
+- See it [[https://liamcdi.github.io/][here]] 
 
-* Pitfalls - Large File
+* Pitfalls and Workarounds
 
-Large output files even with JS minification (~5M). Libraries that use reflection are a major culprit (cannot determine which functions are used easily).
+Large output files even with JS minification (~5M). 
 
-Workarounds
 - Avoid reflection libraries (fmt,encoding,etc)
 - Compress and send via GZIP (~5M to ~1M). Pre-compression is optimal.
 - Can rely on browser calls to remove other libraries (http, etc.)
 
 Failed to compile due to unhandled syscall use (does not effect WASM for STDLIB)
 
-Workarounds
-- put structs shared by the front and back into their own package. The package can have functions from non-syscall libraries. Create a backend-only package for syscalls.
+- Put structs shared by the front and back into their own package. The package can have functions from non-syscall libraries. Create a backend-only package for syscalls.
 
 * Compared to WASM
-Benchmark and Analysis .link https://dev.to/hajimehoshi/gopherjs-vs-webassembly-for-go-148m here
+Benchmark and Analysis [[https://dev.to/hajimehoshi/gopherjs-vs-webassembly-for-go-148m][here]]
 
 WASM Pros
+
 - syscall support enables many more packages to work out of the box
 - greater support from community
 
 WASM Cons
-- Bigger binaries (probably cannot compress as well as js)
-- Actually slower in some browsers (didn't believe it till i saw the data)
+
+- Binaries the same or larger size than generated JS
+- Actually slower in some browsers 
 - Cannot leverage existing JavaScript libraries easily. 
 - Not sure if big IT is allowing it yet for security reasons (trust the JS devil you know)

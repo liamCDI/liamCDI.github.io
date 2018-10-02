@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0036)http://localhost:3999/baltgo.slide#1 -->
+<!-- saved from url=(0036)http://localhost:3999/baltgo.slide#8 -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Speeding Up Frontend Dev with GopherJS</title>
     
@@ -31,9 +31,9 @@
 
   <body style="display: none" class="loaded">
 
-    <section class="slides layout-widescreen" style="">
+    <section class="slides layout-widescreen">
 
-      <article class="current">
+      <article>
         <h1>Speeding Up Frontend Dev with GopherJS</h1>
         <h3>And why to wait on WASM</h3>
         <h3>9 September 2018</h3>
@@ -58,7 +58,7 @@
 
   
   
-      <article class="next">
+      <article>
       
         <h3>Outline</h3>
         
@@ -82,7 +82,7 @@
   
   
   
-      <article class="far-next">
+      <article>
       
         <h3>GopherJS - What is it?</h3>
         
@@ -177,7 +177,7 @@
   
     <li>Bootstrap CSS so it won't look terrible </li>
   
-    <li>Reusing .link https://github.com/liamCDI/arcartok AsciiArtOK code from cgo talk</li>
+    <li>Reusing <a href="https://github.com/liamCDI/arcartok" target="_blank">AsciiArtOK</a> code from cgo talk</li>
   
     <li>Integrating with JQuery for CB registration</li>
   
@@ -185,7 +185,7 @@
   
     <li>CSS needs a little work but you get the gist</li>
   
-    <li>See it .link https://liamcdi.github.io/ here</li>
+    <li>See it <a href="https://liamcdi.github.io/" target="_blank">here</a> </li>
   
   </ul>
 
@@ -195,30 +195,25 @@
   
   
   
-      <article>
+      <article class="far-past">
       
-        <h3>Pitfalls - Large File</h3>
+        <h3>Pitfalls and Workarounds</h3>
         
   
   <p>
-    Large output files even with JS minification (~5M). Libraries that use reflection are a major culprit (cannot determine which functions are used easily).
+    Large output files even with JS minification (~5M). 
   </p>
   
 
+  <ul>
   
-  <p>
-    Workarounds
-<br>
-
-    - Avoid reflection libraries (fmt,encoding,etc)
-<br>
-
-    - Compress and send via GZIP (~5M to ~1M). Pre-compression is optimal.
-<br>
-
-    - Can rely on browser calls to remove other libraries (http, etc.)
-  </p>
+    <li>Avoid reflection libraries (fmt,encoding,etc)</li>
   
+    <li>Compress and send via GZIP (~5M to ~1M). Pre-compression is optimal.</li>
+  
+    <li>Can rely on browser calls to remove other libraries (http, etc.)</li>
+  
+  </ul>
 
   
   <p>
@@ -226,14 +221,11 @@
   </p>
   
 
+  <ul>
   
-  <p>
-    Workarounds
-<br>
-
-    - put structs shared by the front and back into their own package. The package can have functions from non-syscall libraries. Create a backend-only package for syscalls.
-  </p>
+    <li>Put structs shared by the front and back into their own package. The package can have functions from non-syscall libraries. Create a backend-only package for syscalls.</li>
   
+  </ul>
 
       
       <span class="pagenumber">6</span>
@@ -241,45 +233,47 @@
   
   
   
-      <article>
+      <article class="past">
       
         <h3>Compared to WASM</h3>
         
   
   <p>
-    Benchmark and Analysis .link https://dev.to/hajimehoshi/gopherjs-vs-webassembly-for-go-148m here
+    Benchmark and Analysis <a href="https://dev.to/hajimehoshi/gopherjs-vs-webassembly-for-go-148m" target="_blank">here</a>
   </p>
   
 
   
   <p>
     WASM Pros
-<br>
-
-    - syscall support enables many more packages to work out of the box
-<br>
-
-    - greater support from community
   </p>
   
+
+  <ul>
+  
+    <li>syscall support enables many more packages to work out of the box</li>
+  
+    <li>greater support from community</li>
+  
+  </ul>
 
   
   <p>
     WASM Cons
-<br>
-
-    - Bigger binaries (probably cannot compress as well as js)
-<br>
-
-    - Actually slower in some browsers (didn't believe it till i saw the data)
-<br>
-
-    - Cannot leverage existing JavaScript libraries easily. 
-<br>
-
-    - Not sure if big IT is allowing it yet for security reasons (trust the JS devil you know)
   </p>
   
+
+  <ul>
+  
+    <li>Binaries the same or larger size than generated JS</li>
+  
+    <li>Actually slower in some browsers </li>
+  
+    <li>Cannot leverage existing JavaScript libraries easily. </li>
+  
+    <li>Not sure if big IT is allowing it yet for security reasons (trust the JS devil you know)</li>
+  
+  </ul>
 
       
       <span class="pagenumber">7</span>
@@ -287,7 +281,7 @@
   
   
 
-      <article>
+      <article class="current">
         <h3>Thank you</h3>
         
           <div class="presenter">
