@@ -87,6 +87,9 @@ func (a *ArtState) getImage(img string) {
 
 //Render the ascii image
 func (a *ArtState) Render(url string) {
+	state.canvasjq.SetHtml(` <div class="alert alert-info" role="alert">
+	Got image, turning it to ASCII
+</div>`)
 	tpl := `
 	<pre>
 	{{.}}
@@ -134,6 +137,9 @@ func (a *ArtState) DoForm() {
 		Need either a file or a URL
 	</div>`)
 	}
+	state.canvasjq.SetHtml(` <div class="alert alert-info" role="alert">
+	Getting Image
+</div>`)
 
 	if file != js.Undefined {
 		a.ReadImage(file)
@@ -164,8 +170,33 @@ func (a *ArtState) RenderForm() {
 	<div class="form-group">
 	  <label for="transf">Image Transforms</label>
 	  <input type="text" class="form-control" id="transf" aria-describedby="transfHelp" value="resize=100,50;">
-	  <small id="transfHelp" class="form-text text-muted">Using GIFT package, Image Transform Strings sperated by ';'.resize=width,height;contrast=val;invert;sobel;crop=x0,y0,x1,y1;fliphorizontal;flipvertical;rotate=val;conv=x11,x12,x13,x21,x22,x23,x31,x32,x33;
-															</small>
+	  <small id="transfHelp" class="form-text text-muted">Using GIFT package, Image Transform Strings sperated by ';' <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tranfHelpModal">See Transforms</button></small>
+		<div class="modal fade" id="tranfHelpModal" tabindex="-1" role="dialog" aria-labelledby="tranfHelpLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="tranfHelpLabel">Image Transform Options</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+			resize=width,height<br>
+			contrast=val<br>
+			invert<br>
+			sobel<br>
+			crop=x0,y0,x1,y1<br>
+			fliphorizontal<br>
+			flipvertical<br>
+			rotate=val<br>
+			conv=x11,x12,x13,x21,x22,x23,x31,x32,x33<br>										
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+			</div>
+			</div>
+		</div>
+		</div>
 	</div>
 	<button type="button" id="renderBut" class="btn btn-primary">Render</button>
   </form>
@@ -184,6 +215,6 @@ func main() {
 	state.RenderForm()
 
 	state.canvasjq.SetHtml(` <div class="alert alert-info" role="alert">
-	Turn a local or Imgur hosted image into ASCII art. Point to the image, give the ASCII characters to use (lowest to highest intensity), optionally perform image transforms, and finally select Render.
+	Turn a local or Imgur hosted image into ASCII art. Point to the image, give the ASCII characters to use (lowest to highest intensity), optionally give image transforms, and finally select Render.
 </div>`)
 }

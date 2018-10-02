@@ -49,6 +49,9 @@ body {
   max-width: 42em;
 }
 
+.modal{
+  color: black;
+}
 
 /*
  * Header
