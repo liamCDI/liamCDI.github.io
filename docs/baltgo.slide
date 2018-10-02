@@ -83,6 +83,6 @@ WASM Pros
 
 WASM Cons
 - Bigger binaries (probably cannot compress as well as js)
-- Actually slower (didn't believe it till i saw the data)
+- Actually slower in some browsers (didn't believe it till i saw the data)
 - Cannot leverage existing JavaScript libraries easily. 
 - Not sure if big IT is allowing it yet for security reasons (trust the JS devil you know)
